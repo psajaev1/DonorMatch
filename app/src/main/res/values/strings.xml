@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DonorMatch</string>
+    <string name="title_activity_maps">DonorMatch</string>
+    <string name="Open">Drawer Open</string>
+    <string name="Close">Drawer Close</string>
+
+</resources>
