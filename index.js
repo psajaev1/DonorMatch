@@ -7,7 +7,8 @@ const DriveSchema = mongoose.Schema({
   name: String,
   capacity: Number,
   address: String,
-  zip: Number
+  zip: Number,
+  host: String
 });
 
 const UserSchema = mongoose.Schema({
@@ -27,7 +28,7 @@ app.use('/createDrive', (req, res) => {
       // compile schema to model
       var Drive = mongoose.model('drive', DriveSchema, 'Drives');
       // a document instance
-      var drive1 = new Drive({ name: req.query.name, capacity: req.query.capacity, address: req.query.address, zip: req.query.zip });
+      var drive1 = new Drive({ name: req.query.name, capacity: req.query.capacity, address: req.query.address, zip: req.query.zip, host: req.query.host});
       // save model to database
       drive1.save(function (err, drive) {
         if (err) return console.error(err);

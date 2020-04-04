@@ -27,7 +27,7 @@
       var address = document.getElementById("address").value;
       var zip = document.getElementById("zip").value;
       var url = "createDrive?name=" + name + "&capacity=" + capacity + "&address=" +
-      address + "&zip=" + zip;
+      address + "&zip=" + zip + "&host=" + username;
 
       postAsync(url, function (response) {
         if (response) {
