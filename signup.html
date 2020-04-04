@@ -11,19 +11,32 @@
       var name = document.getElementById("name").value;
       var username = document.getElementById("username").value;
       var password = document.getElementById("password").value;
-      var url = "createAdmin?name=" + name + "&username=" + username + "&password=" +
-      password;
 
-      postAsync(url, function (response) {
-        var obj = JSON.parse(response);
+      var urlCheck = "findAdmin?username=" + username;
 
-        if (obj) {
-          console.log("Good register");
-          window.document.location = "accountHome.html" + "?username=" + obj.username;
-        } else {
-          alert("Error occurred, try again.");
-        }
-      });
+        getAsync(urlCheck, function (response) {
+              var obj = JSON.parse(response);
+              if (obj.length != 0) {
+                alert("Username taken. Choose another username.");
+              } else {
+                var url = "createAdmin?name=" + name + "&username=" + username + "&password=" +
+                password;
+
+                postAsync(url, function (response) {
+                var obj = JSON.parse(response);
+
+                if (obj) {
+                  console.log("Good register");
+                  window.document.location = "accountHome.html" + "?username=" + obj.username;
+                } else {
+                  alert("Error occurred, try again.");
+                }
+             });
+            } 
+            }); 
+
+
+      
       }
     </script>
 
