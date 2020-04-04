@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Create Drive</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="connect.js"></script>
+    <script type="text/javascript">
+      var username = "";
+
+      document.addEventListener('DOMContentLoaded', function() {
+        init();
+      });
+
+      const init = function(e) {
+        let spn = document.querySelector("#username");
+        console.log(document.location.search);
+        username = document.location.search.replace(/^.*?\=/, "");
+        console.log(username);
+        spn.innerHTML = username;
+      }
+
+      function back() {
+          window.document.location = "accountHome.html" + "?username=" + username;
+      }
+
+      function changePassword() {
+      var newPassword = document.getElementById("newPassword").value;
+      var url = "editPassword?username=" + username + "&password=" + newPassword;
+
+      getAsync(url, function (response) {
+        var obj = JSON.parse(response);
+        console.log(obj);
+        if (obj) {
+          console.log("Good register");
+          window.document.location = "accountHome.html" + "?username=" + username;
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
+      }
+      
+      function changeName() {
+      var newName = document.getElementById("newName").value;
+      var url = "editName?username=" + username + "&name=" + newName;
+
+      getAsync(url, function (response) {
+        var obj = JSON.parse(response);
+        console.log(obj);
+        if (obj) {
+          console.log("Good register");
+          window.document.location = "accountHome.html" + "?username=" + username;
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
+      }
+    </script>
+
+  </head>
+
+
+  <body>
+    <h1>Edit Account</h1>
+    <br>
+      <p>Welcome user <span id="username">username</span></p>
+      <br>
+      <hr>
+      <br>
+      <h3>Change Name</h3>
+      <label for="newName">Enter New Name:</label>
+      <input id="newName" type="text" placeholder="Enter New Name" name="newName">
+      <button onclick="changeName()">Change Name</button>
+      <br>
+      <h3>Change Password</h3>
+      <label for="newPassword">Enter New Password:</label>
+      <input id="newPassword" type="text" placeholder="Enter New Password" name="newPassword">
+      <button onclick="changePassword()">Change Password</button>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <button onclick="back()">Back</button>
+      
+  </body>
+
+  
+</html>
+
+
+

@@ -18,11 +18,11 @@ const UserSchema = mongoose.Schema({
 
 //CREATE DRIVE
 app.use('/createDrive', (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening createDrive');});
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function() {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening createDrive');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
       console.log("Connection Successful");
       // compile schema to model
       var Drive = mongoose.model('drive', DriveSchema, 'Drives');
@@ -31,7 +31,7 @@ app.use('/createDrive', (req, res) => {
       // save model to database
       drive1.save(function (err, drive) {
         if (err) return console.error(err);
-        res.send(drive.name + " saved to Drives collection.");
+        res.send(drive);
       });
    });
 });
@@ -39,10 +39,10 @@ app.use('/createDrive', (req, res) => {
 //CREATE ADMIN USER
 app.use('/createAdmin', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
-  mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening createAdmin');});
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function() {
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening createAdmin');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
       console.log("Connection Successful");
       // compile schema to model
       var User = mongoose.model('user', UserSchema, 'AdminUsers');
@@ -51,7 +51,7 @@ app.use('/createAdmin', (req, res) => {
       // save model to database
       user1.save(function (err, user) {
         if (err) return console.error(err);
-        res.send(user.name + " saved to a collection.");
+        res.send(user);
       });
    });
 });
@@ -59,11 +59,59 @@ app.use('/createAdmin', (req, res) => {
 //FIND USER
 app.use('/findAdmin', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
-  mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening findAdmin');});
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function() {
-      console.log("Connection Successful");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening findAdmin');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+        // compile schema to model
+        var User = mongoose.model('user', UserSchema, 'AdminUsers');
+        // search for document instance
+        User.find({ username: req.query.username }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
+        });
+     });
+  });
+
+//EDIT PASSWORD
+app.use('/editPassword', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening editPassword');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+
+        db.collection("AdminUsers").updateOne({username: req.query.username}, {$set: {password: req.query.password}});
+
+        // compile schema to model
+        var User = mongoose.model('user', UserSchema, 'AdminUsers');
+        // search for document instance
+        User.find({ username: req.query.username }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
+        });
+     });
+  });
+
+//EDIT NAME
+app.use('/editName', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening editName');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+
+        db.collection("AdminUsers").updateOne({username: req.query.username}, {$set: {name: req.query.name}});
+
         // compile schema to model
         var User = mongoose.model('user', UserSchema, 'AdminUsers');
         // search for document instance
@@ -79,5 +127,5 @@ app.use('/findAdmin', (req, res) => {
 
 //Start server
 app.listen(3000, () => {
-  console.log('Listening on port 3000');
+    console.log('Listening on port 3000');
 });

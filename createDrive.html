@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Create Drive</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="connect.js"></script>
+    <script type="text/javascript">
+      var username = "";
+
+      document.addEventListener('DOMContentLoaded', function() {
+        init();
+      });
+
+      const init = function(e) {
+        let spn = document.querySelector("#username");
+        console.log(document.location.search);
+        username = document.location.search.replace(/^.*?\=/, "");
+        console.log(username);
+        spn.innerHTML = username;
+      }
+
+      function validateNewDrive() {
+      var name = document.getElementById("name").value;
+      var capacity = document.getElementById("capacity").value;
+      var address = document.getElementById("address").value;
+      var zip = document.getElementById("zip").value;
+      var url = "createDrive?name=" + name + "&capacity=" + capacity + "&address=" +
+      address + "&zip=" + zip;
+
+      postAsync(url, function (response) {
+        if (response) {
+          console.log("Good register");
+          window.document.location = "accountHome.html" + "?username=" + username;
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
+      }
+
+      function back() {
+          window.document.location = "accountHome.html" + "?username=" + username;
+      }
+    </script>
+
+  </head>
+
+
+  <body>
+    <h1>Create a new Blood Drive</h1>
+    <br>
+      <p>Welcome user <span id="username">username</span></p>
+      <br>
+      <hr>
+      <br>
+        <label for="name">Name:</label><br>
+        <input id="name" type="text" placeholder="Enter Name of Blood Drive" name="name" required><br><br>
+
+        <label for="capacity">Capacity:</label><br>
+        <input id="capacity" type="text" placeholder="Enter Capacity" name="capacity" required><br><br>
+
+        <label for="address">Address:</label><br>
+        <input id="address" type="text" placeholder="Enter Address" name="address" required><br><br>
+
+        <label for="zip">ZIP:</label><br>
+        <input id="zip" type="text" placeholder="Enter ZIP" name="zip" required><br><br>
+
+        <button onclick="validateNewDrive()">Create</button>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <button onclick="back()">Back</button>
+  </body>
+
+  
+</html>
+
+
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Sign Up</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="connect.js"></script>
+    <script type="text/javascript">
+      function validateSignUp() {
+      var name = document.getElementById("name").value;
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("password").value;
+      var url = "createAdmin?name=" + name + "&username=" + username + "&password=" +
+      password;
+
+      postAsync(url, function (response) {
+        var obj = JSON.parse(response);
+
+        if (obj) {
+          console.log("Good register");
+          window.document.location = "accountHome.html" + "?username=" + obj.username;
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
+      }
+    </script>
+
+  </head>
+
+
+  <body>
+    <h1>Sign Up</h1>
+      <hr>
+      <br>
+
+      
+      <label for="name">Name:</label><br>
+      <input id="name" type="text" placeholder="Enter Full Name" name="name" required><br><br>
+
+      <label for="username">Username:</label><br>
+      <input id="username" type="text" placeholder="Enter Username" name="uname" required><br><br>
+
+      <label for="password"<b>Password:</b></label><br>
+      <input id="password" type="password" placeholder="Enter Password" name="psw" required><br><br>
+
+      <button onclick="validateSignUp()">Register</button>
+
+      <br>
+
+      <p>Already have an account?</p>
+      <a href="login.html">
+        <button>Login</button>
+      </a>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <a href="homepage.html">
+        <button>Back</button>
+      </a>
+
+  </body>
+
+  
+</html>
+
+
+

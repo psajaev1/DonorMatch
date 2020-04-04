@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="connect.js"></script>
+    <script type="text/javascript">
+      function validateLogin() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var url = "findAdmin?username=" + username;
+
+        getAsync(url, function (response) {
+              var obj = JSON.parse(response);
+              if (obj.length != 0) {
+                if (obj[0].password.localeCompare(password) != 0) {
+                alert("Incorrect password, try again.");
+               } else { 
+                console.log("Good login");        
+                window.document.location = "accountHome.html" + "?username=" + obj[0].username;
+                }
+              } else {
+                alert("Incorrect username, try again.");
+            } 
+            });         
+      }
+    </script>
+
+
+  </head>
+
+  <body>
+      <h1 class="title">Login</h1>
+      <hr>
+      <br>
+
+      <label for="username">Username:</label><br>
+      <input id="username" name="username" type="text" placeholder="Enter Username" required><br><br>
+
+      <label for="password"<b>Password:</b></label><br>
+      <input id="password" name="password" type="password" placeholder="Enter Password" required><br><br>
+
+      <button onclick="validateLogin()">Login</button>
+      <br>
+
+      <p>Not registered?</p>
+      <a href="signup.html">
+        <button>Sign Up</button>
+      </a>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <a href="homepage.html">
+        <button>Back</button>
+      </a>
+      
+
+  </body>
+</html>
+
+
+      
+
