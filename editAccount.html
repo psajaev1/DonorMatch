@@ -15,10 +15,23 @@
 
       const init = function(e) {
         let spn = document.querySelector("#username");
-        console.log(document.location.search);
         username = document.location.search.replace(/^.*?\=/, "");
-        console.log(username);
         spn.innerHTML = username;
+
+        var url = "findAdmin?username=" + username;
+        
+        getAsync(url, function (response) {
+        var obj = JSON.parse(response);
+        if (obj) {
+          console.log("Good register");
+          let spn1 = document.querySelector("#name");
+          spn1.innerHTML = obj[0].name;
+          let spn2 = document.querySelector("#password");
+          spn2.innerHTML = obj[0].password;
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
       }
 
       function back() {
@@ -69,11 +82,13 @@
       <hr>
       <br>
       <h3>Change Name</h3>
+      <p>Current Name: <span id="name"></span></p>
       <label for="newName">Enter New Name:</label>
       <input id="newName" type="text" placeholder="Enter New Name" name="newName">
       <button onclick="changeName()">Change Name</button>
       <br>
       <h3>Change Password</h3>
+      <p>Current Password: <span id="password"></span></p>
       <label for="newPassword">Enter New Password:</label>
       <input id="newPassword" type="text" placeholder="Enter New Password" name="newPassword">
       <button onclick="changePassword()">Change Password</button>
