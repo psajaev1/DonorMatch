@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +35,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -65,6 +72,9 @@ public class MapsActivity extends AppCompatActivity implements
                 .findFragmentById(R.id.DonorMatch);
         mapFragment.getMapAsync(this);
 
+
+
+        // all code below within onCreate for navigation menu
         d1 = (DrawerLayout)findViewById(R.id.activity_maps);
         t1 = new ActionBarDrawerToggle(this, d1,R.string.Open, R.string.Close);
 
@@ -126,7 +136,41 @@ public class MapsActivity extends AppCompatActivity implements
             mMap.setMyLocationEnabled(true);
         }
 
+        System.out.printf("dfdfdasfsdafsadf");
+        String address = "";
+        // code to see if I can make a marker on the map using Mongo
+        // trying to put marker on Terakawa
+        try {
+            System.out.println("Does it get to here");
+            String id = "Test";
+            URL url = new URL("http://10.0.2.2:3000/get?name="+id);
+            AccessWebTask task = new AccessWebTask();
+            task.execute(url);
+            address = task.get();
+            address += ", Philadelphia, PA";
+            System.out.println("address in main should be below this");
+            System.out.println(address);
+        } catch (Exception e){
+            e.toString();
+        }
 
+        // getting latitude, longtitude for address, then adds marker to map
+        Geocoder coder = new Geocoder(this);
+        try {
+            List<Address> addresses = coder.getFromLocationName(address, 1);
+            double lat = addresses.get(0).getLatitude();
+            double lng = addresses.get(0).getLongitude();
+
+            LatLng bloodloc = new LatLng(lat, lng);
+            mMap.addMarker(new MarkerOptions().position(bloodloc).title("Blood bank"));
+            System.out.println("getting here means the marker should have been added");
+
+        } catch (IOException e) {
+            System.out.println("is it hitting the exception");
+            e.printStackTrace();
+        }
+
+        System.out.println("this is the end of the on map ready method");
     }
 
     public boolean checkUserLocationPermission(){
@@ -211,4 +255,6 @@ public class MapsActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
 }
