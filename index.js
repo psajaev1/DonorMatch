@@ -126,6 +126,26 @@ app.use('/editName', (req, res) => {
      });
   });
 
+//get Blood drives
+app.use('/get', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening getDrive');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open',function() {
+        console.log("Connection Successful");
+        var Drive = mongoose.model('drive', DriveSchema, 'Drives');
+
+        Drive.findOne({ name: req.query.name}, function (err, data) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(data);
+            res.send(data);
+            });
+        });
+    });
+
 //Start server
 app.listen(3000, () => {
     console.log('Listening on port 3000');
