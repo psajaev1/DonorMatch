@@ -1,0 +1,132 @@
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_availability"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- The main content view -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="125dp"
+            android:text="Please enter your availability below"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/datePick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="110dp"
+            android:layout_marginTop="177dp"
+            android:text="Enter Availability" />
+
+        <TextView
+            android:id="@+id/start_spinner_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="246dp"
+            android:layout_marginEnd="265dp"
+            android:text="Start Time:"
+            android:textSize="20dp"
+            android:visibility="invisible" />
+
+        <Spinner
+            android:id="@+id/spinner_start"
+            android:layout_width="123dp"
+            android:layout_height="65dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="279dp"
+            android:layout_marginEnd="254dp"
+            android:entries="@array/time_array"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/end_spinner_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="251dp"
+            android:layout_marginEnd="36dp"
+            android:text="End Time:"
+            android:textSize="20dp"
+            android:visibility="invisible" />
+
+        <Spinner
+            android:id="@+id/spinner_end"
+            android:layout_width="126dp"
+            android:layout_height="65dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="283dp"
+            android:layout_marginEnd="21dp"
+            android:entries="@array/time_array"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="136dp"
+            android:layout_height="75dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="142dp"
+            android:layout_marginBottom="78dp"
+            android:onClick="onConfirmDateClick"
+            android:text="Confirm"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="39dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="63dp"
+            android:layout_marginBottom="284dp"
+            android:text="Check your availability below"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/dateCheck"
+            android:layout_width="178dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="129dp"
+            android:layout_marginBottom="186dp"
+            android:text="Check your availability"
+            android:onClick="onCheckDateClick"/>
+
+
+    </RelativeLayout>
+
+    <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/nav_header"
+            app:menu="@menu/nav_menu">
+
+        </com.google.android.material.navigation.NavigationView>
+
+        <!-- Add content here -->
+
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

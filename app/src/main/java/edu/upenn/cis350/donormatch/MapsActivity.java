@@ -7,16 +7,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.util.Calendar;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -48,6 +59,12 @@ public class MapsActivity extends AppCompatActivity implements
         LocationListener
 {
 
+    class RequestCode {
+        static final int MAIN_ACTIVITY_NUM = 1;
+        static final int USER_AVAILABILITY_ACTIVITY_NUM = 2;
+        static final int DATE_ACTIVITY_NUM = 3;
+    }
+
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
@@ -57,6 +74,11 @@ public class MapsActivity extends AppCompatActivity implements
     private DrawerLayout d1;
     private ActionBarDrawerToggle t1;
     private NavigationView nv;
+
+    TextView mTv;
+    Button mBtn;
+    Calendar c;
+    DatePickerDialog dpd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +108,9 @@ public class MapsActivity extends AppCompatActivity implements
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int sel = item.getItemId();
-                switch(sel)
+                Fragment fragment = null;
+                Intent i = null;
+                switch(item.getItemId())
                 {
                     case R.id.account:
                         Toast.makeText(MapsActivity.this, "Not implemented yet",Toast.LENGTH_SHORT).show();
@@ -98,8 +121,11 @@ public class MapsActivity extends AppCompatActivity implements
                     case R.id.other:
                         Toast.makeText(MapsActivity.this, "peek a boo",Toast.LENGTH_SHORT).show();
                         break;
-                    default:
-                        return true;
+                    case R.id.user_availability:
+                        i = new Intent(nv.getContext(), AvailabilityActivity.class);
+                        startActivityForResult(i, RequestCode.USER_AVAILABILITY_ACTIVITY_NUM);
+
+                        break;
                 }
                 return true;
             }
@@ -107,6 +133,7 @@ public class MapsActivity extends AppCompatActivity implements
 
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -116,6 +143,10 @@ public class MapsActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 
 
     /**
@@ -136,17 +167,20 @@ public class MapsActivity extends AppCompatActivity implements
             mMap.setMyLocationEnabled(true);
         }
 
-        System.out.printf("dfdfdasfsdafsadf");
+        String temp_address = "";
         String address = "";
         // code to see if I can make a marker on the map using Mongo
         // trying to put marker on Terakawa
         try {
             System.out.println("Does it get to here");
             String id = "Test";
-            URL url = new URL("http://10.0.2.2:3000/get?name="+id);
-            AccessWebTask task = new AccessWebTask();
+            URL url = new URL("http://10.0.2.2:3000/findDrive?name="+id);
+            AccessWebTask task = new AccessWebTask("GET");
             task.execute(url);
-            address = task.get();
+            temp_address = task.get();
+            int indexaddr = temp_address.indexOf("address");
+            int indexzip = temp_address.indexOf("zip");
+            address = temp_address.substring((indexaddr + 10),(indexzip - 3));
             address += ", Philadelphia, PA";
             System.out.println("address in main should be below this");
             System.out.println(address);
@@ -255,6 +289,7 @@ public class MapsActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
 
 
 }
