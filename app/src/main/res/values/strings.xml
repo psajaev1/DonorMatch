@@ -17,7 +17,6 @@
     <string name="re_type_password">Re-type Password</string>
     <string name="your_name">Full Name</string>
 
-
     <string-array name="nav_drawer_items">
         <item> account </item>
         <item>Settings</item>
