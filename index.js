@@ -77,6 +77,96 @@ app.use('/findAdmin', (req, res) => {
         });
      });
   });
+//EDIT ADMIN PASSWORD
+app.use('/editAdminPassword', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening editPassword');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+
+        db.collection("AdminUsers").updateOne({username: req.query.username}, {$set: {password: req.query.password}});
+
+        // compile schema to model
+        var User = mongoose.model('user', UserSchema, 'AdminUsers');
+        // search for document instance
+        User.find({ username: req.query.username }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
+        });
+     });
+  });
+
+//EDIT ADMIN NAME
+app.use('/editAdminName', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening editName');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+
+        db.collection("AdminUsers").updateOne({username: req.query.username}, {$set: {name: req.query.name}});
+
+        // compile schema to model
+        var User = mongoose.model('user', UserSchema, 'AdminUsers');
+        // search for document instance
+        User.find({ username: req.query.username }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
+        });
+     });
+  });
+
+//GET DRIVE HISTORY
+app.use('/getDriveHistory', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening findAdmin');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+        // compile schema to model
+        var Drive = mongoose.model('drive', DriveSchema, 'Drives');
+        // search for document instance
+        Drive.find({ host: req.query.username }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
+        });
+     });
+  });
+
+  //DELETE DRIVE
+  app.use('/deleteDrive', (req, res) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening delete drive');});
+      var db = mongoose.connection;
+      db.on('error', console.error.bind(console, 'connection error:'));
+      db.once('open', function() {
+          console.log("Connection Successful");
+          // compile schema to model
+          var Drive = mongoose.model('drive', DriveSchema, 'Drives');
+          // search for document instance
+          Drive.deleteOne({ "name" : req.query.name }, function (err, data) {
+            if (err) {
+              console.log("DELETEONE error:" + err);
+            }
+            res.send(data);
+            console.log(data);
+          });
+       });
+    });
+
 
 //EDIT PASSWORD
 app.use('/editPassword', (req, res) => {
