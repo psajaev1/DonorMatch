@@ -126,25 +126,103 @@ app.use('/editName', (req, res) => {
      });
   });
 
-//get Blood drives
-app.use('/get', (req, res) => {
+//CREATE USER
+app.use('/createPerson', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
-    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening getDrive');});
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening createPerson');});
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open',function() {
-        console.log("Connection Successful");
-        var Drive = mongoose.model('drive', DriveSchema, 'Drives');
+    db.once('open', function() {
+      console.log("Connection Successful");
+      // compile schema to model
+      var Person = mongoose.model('newPerson', PeopleSchema, 'people');
+      // a document instance
+      var person1 = new Person({ name: req.query.name, age: req.query.age, password: req.query.password});
+      // save model to database
+      person1.save(function (err, user) {
+        if (err) return console.error(err);
 
-        Drive.findOne({ name: req.query.name}, function (err, data) {
-            if (err) {
-                console.log(err);
-            }
-            console.log(data);
-            res.send(data);
-            });
+        res.send(person1);
+      });
+   });
+});
+
+//FIND USER
+app.use('/findPerson', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening findPerson');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+        // compile schema to model
+        var People = mongoose.model('newperson', PeopleSchema, 'people');
+        // search for document instance
+        People.findOne({ name: req.query.name }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
         });
-    });
+     });
+  });
+
+      //add dates to person
+      app.use('/addDate', (req, res) => {
+          res.header("Access-Control-Allow-Origin", "*");
+          mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening addDate');});
+          var db = mongoose.connection;
+
+          var start_date_string = req.query.start_dates;
+          var end_date_string = req.query.end_dates;
+          var start_date = new Date(start_date_string);
+          var end_date = new Date(end_date_string);
+          console.log(start_date);
+          console.log(end_date);
+
+          db.on('error', console.error.bind(console, 'connection error:'));
+          db.once('open', function() {
+              console.log("Connection Successful");
+
+              db.collection("people").updateOne({name: req.query.name}, {$addToSet: {start_dates: start_date}});
+              db.collection("people").updateOne({name: req.query.name}, {$addToSet: {end_dates: end_date}});
+
+
+              // compile schema to model
+              var Person = mongoose.model('people', UserSchema, 'people');
+              // search for document instance
+              Person.find({ name: req.query.name }, function (err, data) {
+                if (err) {
+                  console.log(err);
+                }
+                res.send(data);
+                console.log(data);
+              });
+           });
+        });
+
+
+//FIND PERSON
+app.use('/getPerson', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening getPerson');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+        // compile schema to model
+        var Person = mongoose.model('People', PeopleSchema, 'people');
+        // search for document instance
+        Person.findOne({ name: req.query.name }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
+        });
+     });
+  });
 
 //Start server
 app.listen(3000, () => {
