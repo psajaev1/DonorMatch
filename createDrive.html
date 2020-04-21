@@ -15,9 +15,7 @@
 
       const init = function(e) {
         let spn = document.querySelector("#username");
-        console.log(document.location.search);
         username = document.location.search.replace(/^.*?\=/, "");
-        console.log(username);
         spn.innerHTML = username;
       }
 
@@ -29,14 +27,23 @@
       var url = "createDrive?name=" + name + "&capacity=" + capacity + "&address=" +
       address + "&zip=" + zip + "&host=" + username;
 
-      postAsync(url, function (response) {
-        if (response) {
-          console.log("Good register");
-          window.document.location = "accountHome.html" + "?username=" + username;
-        } else {
-          alert("Error occurred, try again.");
-        }
-      });
+      var urlCheck = "findDrive?name=" + name;
+
+        getAsync(urlCheck, function (response) {
+              var obj = JSON.parse(response);
+              if (obj.length != 0) {
+                alert("Drive name taken. Choose another name for your drive.");
+              } else {
+                postAsync(url, function (response) {
+                if (response) {
+                  console.log("Good register");
+                  window.document.location = "accountHome.html" + "?username=" + username;
+                } else {
+                  alert("Error occurred, try again.");
+                }
+              });
+            } 
+            }); 
       }
 
       function back() {
@@ -49,9 +56,7 @@
 
   <body>
     <h1>Create a new Blood Drive</h1>
-    <br>
-      <p>Welcome user <span id="username">username</span></p>
-      <br>
+      <p>User: <span id="username">username</span></p>
       <hr>
       <br>
         <label for="name">Name:</label><br>

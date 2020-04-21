@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Drive History</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="connect.js"></script>
+    <script type="text/javascript">
+      var username = "";
+
+      document.addEventListener('DOMContentLoaded', function() {
+        init();
+      });
+
+      const init = function(e) {
+        let spn = document.querySelector("#username");
+        username = document.location.search.replace(/^.*?\=/, "");
+        spn.innerHTML = username;
+
+        var url = "getDriveHistory?username=" + username;
+
+        getAsync(url, function (response) {
+        var obj = JSON.parse(response);
+        if (obj) {
+          if (obj.length != 0) {
+            buildTable(obj);
+          } else {
+            var tableTitle = document.getElementById('tableTitle');
+            tableTitle.innerHTML = `No drives created.`;
+          }
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
+      }
+
+      function buildTable(data) {
+        var tableTitle = document.getElementById('tableTitle');
+        tableTitle.innerHTML = `<tr>
+                                <th>Drive Name</th>
+                                <th>Capacity</th>
+                                <th>Address</th>
+                                <th>Zipcode</th>
+                                </tr>`;
+        var table = document.getElementById('myTable');
+
+          for (var i = 0; i < data.length; i++) {
+            var row = `<tr>
+                        <td>${data[i].name}</td>
+                        <td>${data[i].capacity}</td>
+                        <td>${data[i].address}</td>
+                        <td>${data[i].zip}</td>
+                        <td><button id="${data[i].name}" onclick="editDrive(this.id)">Edit ${data[i].name}</button></td>
+                        <td><button id="${data[i].name}" onclick="deleteDrive(this.id)">Delete ${data[i].name}</button></td>
+                      </tr>`;
+            table.innerHTML += row;
+          }
+      }
+
+      function editDrive(id) {
+        window.document.location = "editDrive.html" + "?drivename=" + id;
+      }
+
+      function deleteDrive(id) {
+        console.log("delete " + id);
+        var url = "deleteDrive?name=" + id;
+        postAsync(url, function (response) {
+            var obj = JSON.parse(response);
+            if (obj) {
+              console.log("Good delete");
+              location.reload();
+            } else {
+              alert("Error occurred, try again.");
+            }
+        });
+      }
+
+      function back() {
+          window.document.location = "accountHome.html" + "?username=" + username;
+      }
+    </script>
+
+  </head>
+
+  <body>
+    <h1>View Drive History</h1>
+      <p>User: <span id="username">username</span></p>
+      <hr>
+      <br>
+        <table>
+          <tbody id=tableTitle class=ce></tbody>
+          <tbody id=myTable></tbody>
+        </table>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <button onclick="back()">Back</button>
+  </body>
+</html>

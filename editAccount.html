@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Create Drive</title>
+    <title>Edit Account</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -40,7 +40,7 @@
 
       function changePassword() {
       var newPassword = document.getElementById("newPassword").value;
-      var url = "editPassword?username=" + username + "&password=" + newPassword;
+      var url = "editAdminPassword?username=" + username + "&password=" + newPassword;
 
       getAsync(url, function (response) {
         var obj = JSON.parse(response);
@@ -56,7 +56,7 @@
       
       function changeName() {
       var newName = document.getElementById("newName").value;
-      var url = "editName?username=" + username + "&name=" + newName;
+      var url = "editAdminName?username=" + username + "&name=" + newName;
 
       getAsync(url, function (response) {
         var obj = JSON.parse(response);
@@ -69,6 +69,10 @@
         }
       });
       }
+
+      function deleteAccount() {
+        window.document.location = "deleteAccount.html" + "?username=" + username;
+      }
     </script>
 
   </head>
@@ -76,9 +80,7 @@
 
   <body>
     <h1>Edit Account</h1>
-    <br>
-      <p>Welcome user <span id="username">username</span></p>
-      <br>
+      <p>User: <span id="username">username</span></p>
       <hr>
       <br>
       <h3>Change Name</h3>
@@ -97,13 +99,9 @@
       <br>
       <br>
       <br>
-      <br>
       <button onclick="back()">Back</button>
       
   </body>
 
   
 </html>
-
-
-

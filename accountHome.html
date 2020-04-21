@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Homepage</title>
+    <title>Account Homepage</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -14,14 +14,16 @@
 
       const init = function(e) {
         let spn = document.querySelector("#username");
-        console.log(document.location.search);
         username = document.location.search.replace(/^.*?\=/, "");
-        console.log(username);
         spn.innerHTML = username;
       }
 
       function createDrive() {
         window.document.location = "createDrive.html" + "?username=" + username;
+      }
+
+      function driveHistory() {
+        window.document.location = "driveHistory.html" + "?username=" + username;
       }
 
       function editAccount() {
@@ -35,16 +37,16 @@
       <h1>Welcome to DonorMatch</h1>
       <hr>
       <br>
-      <p>Welcome user <span id="username">username</span></p>
+      <p>Welcome <span id="username">username</span></p>
       <br>
       <br>
-        <button onclick="createDrive()">Create New Drive</button>
-
+      <button onclick="createDrive()">Create New Drive</button>
       <br>
       <br>
-
+      <button onclick="driveHistory()">View Created Drives</button>
+      <br>
+      <br>
       <button onclick="editAccount()">Edit Account</button>
-
       <br>
       <br>
       <br>
