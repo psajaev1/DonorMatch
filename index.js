@@ -8,14 +8,26 @@ const DriveSchema = mongoose.Schema({
   capacity: Number,
   address: String,
   zip: Number,
-  host: String
+  host: String,
+  start: Date,
+  end: Date
 });
+
 
 const UserSchema = mongoose.Schema({
   username: String,
   password: String,
   name: String
 });
+
+const PeopleSchema = mongoose.Schema({
+  name: String,
+  age: Number,
+  password: String,
+  start_dates: [Date],
+  end_dates: [Date]
+})
+
 
 //CREATE DRIVE
 app.use('/createDrive', (req, res) => {
@@ -28,7 +40,8 @@ app.use('/createDrive', (req, res) => {
       // compile schema to model
       var Drive = mongoose.model('drive', DriveSchema, 'Drives');
       // a document instance
-      var drive1 = new Drive({ name: req.query.name, capacity: req.query.capacity, address: req.query.address, zip: req.query.zip, host: req.query.host});
+      var drive1 = new Drive({ name: req.query.name, capacity: req.query.capacity, address: req.query.address, 
+        zip: req.query.zip, host: req.query.host, start: req.query.start, end:req.query.end});
       // save model to database
       drive1.save(function (err, drive) {
         if (err) return console.error(err);
@@ -36,6 +49,27 @@ app.use('/createDrive', (req, res) => {
       });
    });
 });
+
+//FIND DRIVE
+app.use('/findDrive', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening findAdmin');});
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log("Connection Successful");
+        // compile schema to model
+        var Drive = mongoose.model('drive', DriveSchema, 'Drives');
+        // search for document instance
+        Drive.find({ name: req.query.name }, function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          res.send(data);
+          console.log(data);
+        });
+     });
+  });
 
 //CREATE ADMIN USER
 app.use('/createAdmin', (req, res) => {
@@ -78,8 +112,8 @@ app.use('/findAdmin', (req, res) => {
      });
   });
 
-//EDIT PASSWORD
-app.use('/editPassword', (req, res) => {
+//EDIT ADMIN PASSWORD
+app.use('/editAdminPassword', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening editPassword');});
     var db = mongoose.connection;
@@ -102,8 +136,8 @@ app.use('/editPassword', (req, res) => {
      });
   });
 
-//EDIT NAME
-app.use('/editName', (req, res) => {
+//EDIT ADMIN NAME
+app.use('/editAdminName', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening editName');});
     var db = mongoose.connection;
@@ -126,39 +160,18 @@ app.use('/editName', (req, res) => {
      });
   });
 
-//CREATE USER
-app.use('/createPerson', (req, res) => {
+//GET DRIVE HISTORY
+app.use('/getDriveHistory', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
-    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening createPerson');});
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function() {
-      console.log("Connection Successful");
-      // compile schema to model
-      var Person = mongoose.model('newPerson', PeopleSchema, 'people');
-      // a document instance
-      var person1 = new Person({ name: req.query.name, age: req.query.age, password: req.query.password});
-      // save model to database
-      person1.save(function (err, user) {
-        if (err) return console.error(err);
-
-        res.send(person1);
-      });
-   });
-});
-
-//FIND USER
-app.use('/findPerson', (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening findPerson');});
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening findAdmin');});
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function() {
         console.log("Connection Successful");
         // compile schema to model
-        var People = mongoose.model('newperson', PeopleSchema, 'people');
+        var Drive = mongoose.model('drive', DriveSchema, 'Drives');
         // search for document instance
-        People.findOne({ name: req.query.name }, function (err, data) {
+        Drive.find({ host: req.query.username }, function (err, data) {
           if (err) {
             console.log(err);
           }
@@ -168,41 +181,49 @@ app.use('/findPerson', (req, res) => {
      });
   });
 
-      //add dates to person
-      app.use('/addDate', (req, res) => {
-          res.header("Access-Control-Allow-Origin", "*");
-          mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening addDate');});
-          var db = mongoose.connection;
+  //DELETE DRIVE
+  app.use('/deleteDrive', (req, res) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening delete drive');});
+      var db = mongoose.connection;
+      db.on('error', console.error.bind(console, 'connection error:'));
+      db.once('open', function() {
+          console.log("Connection Successful");
+          // compile schema to model
+          var Drive = mongoose.model('drive', DriveSchema, 'Drives');
+          // search for document instance
+          Drive.deleteOne({ "name" : req.query.name }, function (err, data) {
+            if (err) {
+              console.log("DELETEONE error:" + err);
+            }
+            res.send(data);
+            console.log(data);
+          });
+       });
+    });
 
-          var start_date_string = req.query.start_dates;
-          var end_date_string = req.query.end_dates;
-          var start_date = new Date(start_date_string);
-          var end_date = new Date(end_date_string);
-          console.log(start_date);
-          console.log(end_date);
+    //EDIT DRIVE
+    app.use('/editDrive', (req, res) => {
+        res.header("Access-Control-Allow-Origin", "*");
+        mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening createDrive');});
+        var db = mongoose.connection;
+        db.on('error', console.error.bind(console, 'connection error:'));
+        db.once('open', function() {
+          console.log("Connection Successful");
+          // compile schema to model
+          var Drive = mongoose.model('drive', DriveSchema, 'Drives');
+          // save model to database
+          Drive.replaceOne({ "name" : req.query.name },
+          { name: req.query.newname, capacity: req.query.capacity, address: req.query.address, zip: req.query.zip, host: req.query.host },
+          function (err, drive) {
+            if (err) return console.error(err);
+            res.send(drive);
+          });
+       });
+    });
 
-          db.on('error', console.error.bind(console, 'connection error:'));
-          db.once('open', function() {
-              console.log("Connection Successful");
-
-              db.collection("people").updateOne({name: req.query.name}, {$addToSet: {start_dates: start_date}});
-              db.collection("people").updateOne({name: req.query.name}, {$addToSet: {end_dates: end_date}});
-
-
-              // compile schema to model
-              var Person = mongoose.model('people', UserSchema, 'people');
-              // search for document instance
-              Person.find({ name: req.query.name }, function (err, data) {
-                if (err) {
-                  console.log(err);
-                }
-                res.send(data);
-                console.log(data);
-              });
-           });
-        });
-
-        app.use('/getAllPeople', (req, res) => {
+    //GET ALL USERS
+    app.use('/getAllPeople', (req, res) => {
             res.header("Access-Control-Allow-Origin", "*");
             mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening getPerson');});
             var db = mongoose.connection;
@@ -221,27 +242,6 @@ app.use('/findPerson', (req, res) => {
                 });
              });
           });
-
-//FIND PERSON
-app.use('/getPerson', (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, () => {console.log('listening getPerson');});
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function() {
-        console.log("Connection Successful");
-        // compile schema to model
-        var Person = mongoose.model('People', PeopleSchema, 'people');
-        // search for document instance
-        Person.findOne({ name: req.query.name }, function (err, data) {
-          if (err) {
-            console.log(err);
-          }
-          res.send(data);
-          console.log(data);
-        });
-     });
-  });
 
 //Start server
 app.listen(3000, () => {

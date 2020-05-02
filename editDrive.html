@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Edit Drive</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="connect.js"></script>
+
+    <script type="text/javascript">
+      var name = "";
+      var username = "";
+
+      document.addEventListener('DOMContentLoaded', function() {
+        init();
+      });
+
+      const init = function(e) {
+        let spn = document.querySelector("#name");
+        dname = document.location.search.replace(/^.*?\=/, "");
+        spn.innerHTML = username;
+        var url = "findDrive?name=" + dname;
+
+        getAsync(url, function (response) {
+        var obj = JSON.parse(response);
+        if (obj) {
+          console.log("Good register");
+          name = obj[0].name;
+          username = obj[0].host;
+          document.getElementById("name").value = obj[0].name;
+          document.getElementById("capacity").value = obj[0].capacity;
+          document.getElementById("address").value = obj[0].address;
+          document.getElementById("zip").value = obj[0].zip;
+
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
+      }
+
+      function updateDrive() {
+        var newname = document.getElementById("name").value;
+        var capacity = document.getElementById("capacity").value;
+        var address = document.getElementById("address").value;
+        var zip = document.getElementById("zip").value;
+        var date = document.getElementById("date").value;
+        var startTime = document.getElementById("startTime").value;
+        var endTime = document.getElementById("endTime").value;
+        var start = new Date(date + "T"+startTime);
+        start.setTime(start.getTime() - start.getTimezoneOffset()*60*1000);
+        var end = new Date(date+"T"+endTime);
+        end.setTime(end.getTime() - end.getTimezoneOffset()*60*1000);
+
+        var createUrl = "createDrive?name=" + newname + "&capacity=" + capacity + "&address=" +
+        address + "&zip=" + zip + "&host=" + username + "&start=" + start + "&end=" + end;
+
+        var urlCheck = "findDrive?name=" + newname;
+
+          getAsync(urlCheck, function (response) {
+                var obj = JSON.parse(response);
+                if (obj.length != 0 && obj[0].name != name) {
+                  alert("Drive name taken. Choose another name for your drive.");
+                } else {
+                  //delete drive
+                  var url = "deleteDrive?name=" + name;
+                  postAsync(url, function (response) {
+                      var obj = JSON.parse(response);
+                      if (obj) {
+                        //create drive
+                        console.log("Good delete");
+                        postAsync(createUrl, function (response) {
+                        if (response) {
+                          console.log("Good register");
+                          window.document.location = "driveHistory.html" + "?username=" + username;
+                        } else {
+                          alert("Error occurred, try again.");
+                        }});
+                      } else {
+                        alert("Error occurred, try again.");
+                      }});
+              }
+          });
+      }
+
+      function back() {
+        console.log("USERNAME:" + username);
+        window.document.location = "driveHistory.html" + "?username=" + username;
+      }
+    </script>
+
+  </head>
+
+
+  <body>
+    <h1>Edit Drive</h1>
+      <hr>
+      <br>
+        <label for="name">Name:</label><br>
+        <input id="name" type="text" placeholder="Enter Name of Blood Drive" name="name" required><br><br>
+
+        <label for="capacity">Capacity:</label><br>
+        <input id="capacity" type="text" placeholder="Enter Capacity" name="capacity" required><br><br>
+
+        <label for="address">Address:</label><br>
+        <input id="address" type="text" placeholder="Enter Address" name="address" required><br><br>
+
+        <label for="zip">ZIP:</label><br>
+        <input id="zip" type="text" placeholder="Enter ZIP" name="zip" required><br><br>
+
+        <label for="date">Availability:</label><br>
+        <input type="date" id="date" name="date"><br>
+        <label for="startTime">Open:</label>
+        <input type="time" id="startTime" name="startTime" min="00:00" max="23:59" required>
+        <label for="endTime">Close:</label>
+        <input type="time" id="endTime" name="endTime" min="00:00" max="23:59" required><br><br>
+
+        <button onclick="updateDrive()">Update</button>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <button onclick="back()">Back</button>
+
+</body>
+
+
+</html>

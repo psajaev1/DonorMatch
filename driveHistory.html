@@ -42,6 +42,8 @@
                                 <th>Capacity</th>
                                 <th>Address</th>
                                 <th>Zipcode</th>
+                                <th>Start</th>
+                                <th>End</th>
                                 </tr>`;
         var table = document.getElementById('myTable');
 
@@ -51,6 +53,8 @@
                         <td>${data[i].capacity}</td>
                         <td>${data[i].address}</td>
                         <td>${data[i].zip}</td>
+                        <td>${data[i].start.toString()}</td>
+                        <td>${data[i].end.toString()}</td>
                         <td><button id="${data[i].name}" onclick="editDrive(this.id)">Edit ${data[i].name}</button></td>
                         <td><button id="${data[i].name}" onclick="deleteDrive(this.id)">Delete ${data[i].name}</button></td>
                       </tr>`;

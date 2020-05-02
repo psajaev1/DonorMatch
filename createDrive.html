@@ -24,9 +24,19 @@
       var capacity = document.getElementById("capacity").value;
       var address = document.getElementById("address").value;
       var zip = document.getElementById("zip").value;
-      var url = "createDrive?name=" + name + "&capacity=" + capacity + "&address=" +
-      address + "&zip=" + zip + "&host=" + username;
+      var date = document.getElementById("date").value;
+      var startTime = document.getElementById("startTime").value;
+      var endTime = document.getElementById("endTime").value;
+      var start = new Date(date + "T"+startTime);
+      start.setTime(start.getTime() - start.getTimezoneOffset()*60*1000);
+      var end = new Date(date+"T"+endTime);
+      end.setTime(end.getTime() - end.getTimezoneOffset()*60*1000);
 
+      console.log(start);
+      console.log(end);
+      var url = "createDrive?name=" + name + "&capacity=" + capacity + "&address=" +
+      address + "&zip=" + zip + "&host=" + username + "&start=" + start + "&end=" + end;
+      console.log(url);
       var urlCheck = "findDrive?name=" + name;
 
         getAsync(urlCheck, function (response) {
@@ -70,6 +80,13 @@
 
         <label for="zip">ZIP:</label><br>
         <input id="zip" type="text" placeholder="Enter ZIP" name="zip" required><br><br>
+
+        <label for="date">Availability:</label><br>
+        <input type="date" id="date" name="date"><br>
+        <label for="startTime">Open:</label>
+        <input type="time" id="startTime" name="startTime" min="00:00" max="23:59" required>
+        <label for="endTime">Close:</label>
+        <input type="time" id="endTime" name="endTime" min="00:00" max="23:59" required><br><br>
 
         <button onclick="validateNewDrive()">Create</button>
       <br>
