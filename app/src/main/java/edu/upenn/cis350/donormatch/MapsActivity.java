@@ -49,6 +49,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,6 +64,8 @@ public class MapsActivity extends AppCompatActivity implements
         static final int MAIN_ACTIVITY_NUM = 1;
         static final int USER_AVAILABILITY_ACTIVITY_NUM = 2;
         static final int DATE_ACTIVITY_NUM = 3;
+        static final int LOGIN_SCREEN = 4;
+        static final int MESSAGE_SCREEN = 5;
     }
 
     private GoogleMap mMap;
@@ -112,19 +115,13 @@ public class MapsActivity extends AppCompatActivity implements
                 Intent i = null;
                 switch(item.getItemId())
                 {
-                    case R.id.account:
-                        Toast.makeText(MapsActivity.this, "Not implemented yet",Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.settings:
-                        Toast.makeText(MapsActivity.this, "Not implemented yet",Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.other:
-                        Toast.makeText(MapsActivity.this, "peek a boo",Toast.LENGTH_SHORT).show();
-                        break;
                     case R.id.user_availability:
                         i = new Intent(nv.getContext(), AvailabilityActivity.class);
                         startActivityForResult(i, RequestCode.USER_AVAILABILITY_ACTIVITY_NUM);
-
+                        break;
+                    case R.id.messages:
+                        i = new Intent(nv.getContext(), MessageActivity.class);
+                        startActivityForResult(i, RequestCode.MESSAGE_SCREEN);
                         break;
                 }
                 return true;
@@ -169,39 +166,77 @@ public class MapsActivity extends AppCompatActivity implements
 
         String temp_address = "";
         String address = "";
+        List<String> list_address = new ArrayList<String>();
+        List<String> list_name = new ArrayList<String>();
+        List<Integer> address_index = new ArrayList<Integer>();
+        List<Integer> zip_index = new ArrayList<Integer>();
+        List<Integer> name_index = new ArrayList<Integer>();
+        List<Integer> cap_index = new ArrayList<Integer>();
         // code to see if I can make a marker on the map using Mongo
-        // trying to put marker on Terakawa
         try {
             System.out.println("Does it get to here");
-            String id = "Test";
-            URL url = new URL("http://10.0.2.2:3000/findDrive?name="+id);
+            String userzip = "19104";
+            URL url = new URL("http://10.0.2.2:3000/findDrives?zip="+userzip);
             AccessWebTask task = new AccessWebTask("GET");
             task.execute(url);
             temp_address = task.get();
-            int indexaddr = temp_address.indexOf("address");
-            int indexzip = temp_address.indexOf("zip");
-            address = temp_address.substring((indexaddr + 10),(indexzip - 3));
-            address += ", Philadelphia, PA";
-            System.out.println("address in main should be below this");
-            System.out.println(address);
+
+            for (int index1 = temp_address.indexOf("address"); index1 >= 0; index1 = temp_address.indexOf("address", index1 + 1)){
+                address_index.add(index1);
+            }
+
+            for (int index2 = temp_address.indexOf("zip"); index2 >= 0; index2 = temp_address.indexOf("zip", index2 + 1)){
+                zip_index.add(index2);
+            }
+
+            // extracts name and address from json string obejct
+            for (int index1 = temp_address.indexOf("name"); index1 >= 0; index1 = temp_address.indexOf("name", index1 + 1)){
+                name_index.add(index1);
+            }
+
+            for (int index2 = temp_address.indexOf("capacity"); index2 >= 0; index2 = temp_address.indexOf("capacity", index2 + 1)){
+                cap_index.add(index2);
+            }
+
+            for (int a = 0; a < zip_index.size(); a++){
+                int indexaddr = address_index.get(a);
+                int indexzip = zip_index.get(a);
+                int indexname = name_index.get(a);
+                int indexcap = cap_index.get(a);
+                String real_address = temp_address.substring((indexaddr + 10), (indexzip - 3));
+                String real_name = temp_address.substring((indexname + 7), (indexcap - 3));
+                real_address += ", Philadelphia, PA";
+                System.out.println("address in main should be below this");
+                System.out.println(real_address);
+                list_address.add(real_address);
+                list_name.add(real_name);
+            }
+
         } catch (Exception e){
             e.toString();
         }
 
         // getting latitude, longtitude for address, then adds marker to map
         Geocoder coder = new Geocoder(this);
-        try {
-            List<Address> addresses = coder.getFromLocationName(address, 1);
-            double lat = addresses.get(0).getLatitude();
-            double lng = addresses.get(0).getLongitude();
+        for (int i = 0; i < list_address.size(); i++) {
 
-            LatLng bloodloc = new LatLng(lat, lng);
-            mMap.addMarker(new MarkerOptions().position(bloodloc).title("Blood bank"));
-            System.out.println("getting here means the marker should have been added");
+            try {
 
-        } catch (IOException e) {
-            System.out.println("is it hitting the exception");
-            e.printStackTrace();
+                address = list_address.get(i);
+                String bname = list_name.get(i);
+                List<Address> addresses = coder.getFromLocationName(address, 1);
+                double lat = addresses.get(0).getLatitude();
+                double lng = addresses.get(0).getLongitude();
+
+                LatLng bloodloc = new LatLng(lat, lng);
+                mMap.addMarker(new MarkerOptions().position(bloodloc).title(bname));
+                System.out.println("getting here means the marker should have been added");
+
+
+            } catch (IOException e) {
+                System.out.println("is it hitting the exception");
+                e.printStackTrace();
+            }
         }
 
         System.out.println("this is the end of the on map ready method");
