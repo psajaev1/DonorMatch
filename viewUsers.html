@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Drive History</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="connect.js"></script>
+    <script type="text/javascript">
+      var username = "";
+
+      document.addEventListener('DOMContentLoaded', function() {
+        init();
+      });
+
+      const init = function(e) {
+        let spn = document.querySelector("#username");
+        username = document.location.search.replace(/^.*?\=/, "");
+        spn.innerHTML = username;
+
+        var url = "getAllPeople?";
+
+        getAsync(url, function (response) {
+        var obj = JSON.parse(response);
+        if (obj) {
+          if (obj.length != 0) {
+            buildTable(obj);
+          } else {
+            var tableTitle = document.getElementById('tableTitle');
+            tableTitle.innerHTML = `No users found`;
+          }
+        } else {
+          alert("Error occurred, try again.");
+        }
+      });
+      }
+
+      function buildTable(data) {
+        var tableTitle = document.getElementById('tableTitle');
+        tableTitle.innerHTML = `<tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                </tr>`;
+        var table = document.getElementById('myTable');
+
+          for (var i = 0; i < data.length; i++) {
+            var row = `<tr>
+                        <td>${data[i].name}</td>
+                        <td>${data[i].age}</td>
+                      </tr>`;
+            table.innerHTML += row;
+          }
+      }
+
+      function back() {
+          window.document.location = "accountHome.html" + "?username=" + username;
+      }
+    </script>
+
+  </head>
+
+  <body>
+    <h1>View All Users</h1>
+      <p>Admin: <span id="username">username</span></p>
+      <hr>
+      <br>
+        <table>
+          <tbody id=tableTitle class=ce></tbody>
+          <tbody id=myTable></tbody>
+        </table>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <button onclick="back()">Back</button>
+  </body>
+</html>

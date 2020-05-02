@@ -29,8 +29,12 @@
       function editAccount() {
         window.document.location = "editAccount.html" + "?username=" + username;
       }
+
+      function allPeople() {
+        window.document.location = "viewUsers.html" + "?username=" + username;
+      }
     </script>
-    
+
   </head>
 
   <body>
@@ -49,21 +53,15 @@
       <button onclick="editAccount()">Edit Account</button>
       <br>
       <br>
-      <br>
+      <button onclick="allPeople()">View Users</button>
       <br>
       <br>
       <br>
       <a href="homepage.html">
         <button>Log Out</button>
       </a>
-      
+
 
 
   </body>
 </html>
-
-
-      
-
-
-
